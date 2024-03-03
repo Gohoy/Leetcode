@@ -1,66 +1,88 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-public class Problem1 {
-    public static void main(String[] args) {
-        int n;
-        String head;
-        Scanner scanner = new Scanner(System.in);
-//        head = scanner.nextInt();
-        head = scanner.next();
-        n = scanner.nextInt();
-        ArrayList<node> nodes = new ArrayList<>();
-        ArrayList<node> res = new ArrayList<>();
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node next;
 
-        for (int i = 0; i < n; i++) {
-            node node = new node();
-//            node.address = String.valueOf(scanner.nextInt());
-            node.address = scanner.next();
-            node.data = scanner.nextInt();
+    public Node() {}
 
-//            node.next = String.valueOf(scanner.nextInt());
-            node.next = scanner.next();
-            nodes.add(node);
+    public Node(int _val) {
+        val = _val;
+    }
 
+    public Node(int _val, Node _left, Node _right, Node _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+class TreeNode {
+      int val;
+      TreeNode left;
+      TreeNode right;
+      TreeNode() {}
+      TreeNode(int val) { this.val = val; }
+      TreeNode(int val, TreeNode left, TreeNode right) {
+          this.val = val;
+          this.left = left;
+          this.right = right;
+      }
+  }
+class Solution {
+    public static Node connect(Node root) {
+        if(root == null){
+            return new Node();
         }
-
-        for (int j = 0; j < n; j++) {
-
-            for (int i = 0; i < n; i++) {
-                if (nodes.get(i).address.equals(head)) {
-                    res.add(nodes.get(i));
-                    head = nodes.get(i).next;
+        Node head = new Node();
+        head.next = root;
+        bfs(root);
+        return head.next;
+    }
+    public  static void   bfs(Node root){
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (queue.size() != 0 ){
+            int cap = queue.size();
+            while (cap != 0){
+                Node tmpNode = queue.poll();
+                if(!queue.isEmpty()){
+                    queue.peek().next = tmpNode;
+                }
+                System.out.println(tmpNode.val);
+                cap --;
+                if(tmpNode.right != null){
+                    queue.add(tmpNode.right);
+                }
+                if(tmpNode.left != null){
+                    queue.add(tmpNode.left);
                 }
             }
-        }
-        Set<Integer> data = new HashSet<>();
-        node newNode = new node();
-        newNode.data = -1;
-        for (int i = 0; i < n; i++) {
-            if (!data.contains(Math.abs(res.get(i).data))) {
-                data.add(Math.abs(res.get(i).data));
-            } else {
-                res.get(i - 1).next = res.get(i).next;
 
-                res.set(i, newNode);
+            if(!queue.isEmpty()){
+                Node lastNode = queue.peek();
+                lastNode.next = null;
             }
-        }
-        while (res.contains(newNode)) {
-            res.remove(newNode);
-        }
-        System.out.println(res.size() + " ");
-        for (int i = 0; i < res.size(); i++) {
-            System.out.println(res.get(i).address + "  " + res.get(i).data + "  " + res.get(i).next);
+
         }
     }
 
-    static class node {
-        String address;
-        int data;
-        String next;
+    public static void main(String[] args) {
+        Node root = new Node(1);
+        root.left = new Node(2);
+        root.right = new Node(3);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
+        Node connect = connect(root);
+        System.out.println(connect);
     }
 }
